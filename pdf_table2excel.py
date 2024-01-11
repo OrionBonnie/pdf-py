@@ -56,6 +56,7 @@ def is_empty_row(in_row):        # 用于判断内容的行是否为空，如果
         result_list.append(not bool(test_null))
     return all(result_list)             # all()方法如果所有都为True，则返回True
 
+
 def pdf_table2csv(pdf_path):
 
     pdf_pages_total = len(pypdf.PdfReader(pdf_path).pages)
@@ -82,12 +83,13 @@ def pdf_table2csv(pdf_path):
         page_between = input("请输入你想要提取的页码: ")
         split = page_between.split()
         selected_pages = split.copy()
-    if int(selected_pages[-1]) > pdf_pages_total:
-        print("页数超过PDF文件的最大页数, 您输入了大于PDF页数的页码")
-        print("你只可输入两个数字作为范围")
-        print("按任意键退出")
-        getch()
-        exit()
+    if choice == "2" or choice == "3":
+        if int(selected_pages[-1]) > pdf_pages_total:
+            print("页数超过PDF文件的最大页数, 您输入了大于PDF页数的页码")
+            print("你只可输入两个数字作为范围")
+            print("按任意键退出")
+            getch()
+            exit()
 
     if not os.path.exists(r".\csv"):        # 检查csv目录是否存在，不存在则创建
         os.mkdir(r".\csv")
@@ -120,6 +122,7 @@ def csv2xlsx(csv_file):
     web_book = Workbook()
     sheet = web_book.active
     row_num = 1      # 当前所在的行
+    column_max_num = 1
     for row in rows_content:            # 开始遍历行内容列表
         for i in range(len(row)):       # 遍历当前行的所有元素, 此处用于修改当前行单元格的样式
             i += 1
@@ -128,11 +131,13 @@ def csv2xlsx(csv_file):
             sheet.cell(row=row_num, column=i).border = border
             alignment = Alignment(horizontal="left", vertical="center", wrapText=False, shrinkToFit=True)
             sheet.cell(row=row_num, column=i).alignment = alignment
+            if i > column_max_num:      #比较直到遍历所有行得到最大列数
+                column_max_num = i
         sheet.append(row)
         row_num += 1        # +1使下次遍历对下一行进行格式化
 
     init_column_ascii = ord("A")
-    for column in range(5):       # 根据列数调整列宽
+    for column in range(column_max_num):       # 根据最大列数调整列宽
         sheet.column_dimensions[chr(init_column_ascii)].width = 18
         init_column_ascii += 1
 
