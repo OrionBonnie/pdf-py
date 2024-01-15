@@ -1,12 +1,15 @@
+import os
+import subprocess
+import sys
+from pathlib import Path
+from time import sleep
+from re import match
+from os import cpu_count, listdir
+from os.path import splitext
+from msvcrt import getch
+from tqdm import tqdm
 try:
-    import subprocess
-    from pathlib import Path
-    from time import sleep
     from pdf2word import Converter
-    from re import match
-    from os import cpu_count, listdir
-    from os.path import splitext
-    from msvcrt import getch
 except ModuleNotFoundError:
     command = "pip list"
     list_result = subprocess.run(command, capture_output=True)
@@ -21,7 +24,7 @@ except ModuleNotFoundError:
         getch()
         exit()
 finally:
-    print("模块载入完毕")
+    print("pdf转word模块已导入")
     sleep(2)
 
 
@@ -57,30 +60,31 @@ def get_pdf_list():
 
 
 def convert2docx(pdf):
-    print(f"开始转化 {pdf}")
     sleep(1)
     in_pdf_path = pdf
-    out_docx_path = Path(r".\out")
     converter = Converter(in_pdf_path)
     cpu_num = cpu_count()
-    if not out_docx_path.exists():
-        out_docx_path.mkdir()
+    docx_path = ""
     if splitext(in_pdf_path)[-1] == ".pdf":
         docx_filename = str(in_pdf_path.replace("pdf", "docx"))
-        docx_filename = docx_filename.replace("in", "out")
-        converter.convert(docx_filename, multiprocessing=cpu_num)
+        docx_path = docx_filename.replace("in", "out")
     elif splitext(in_pdf_path)[-1] == ".PDF":
         docx_filename = str(in_pdf_path.replace("PDF", "docx"))
-        docx_filename = docx_filename.replace("in", "out")
-        converter.convert(docx_filename, multiprocessing=cpu_num)
+        docx_path = docx_filename.replace("in", "out")
+    converter.convert(docx_path, multiprocessing=cpu_num)
     converter.close()
 
 
 def main():
+    if not os.path.exists(r".\out"):
+        os.mkdir(r".\out")
+    else:
+        for file in os.listdir(r".\out"):
+            os.remove(r".\out\\" + file)
     for pdf_file in get_pdf_list():
         convert2docx(pdf_file)
-        print(f"转换完成，共有 {len(get_pdf_list())} 个文件被转换成 docx， 格式即背景颜色可能会有小毛病")
-        print("比如边距会被改变，这个可以在布局一栏中选择边距然后选择正常即可")
-        print("还有就是表格的位置可能会出现问题，单击表格然后在表格布局菜单中选择自适应，选择自适应当前窗口")
-        print("按任意键退出")
-        getch()
+    print("转换完成，共转换 {} 个docx, 格式及背景颜色可能会有小毛病".format(os.listdir(r'.\out')))
+    sleep(1.5)
+    os.system(r"start .\out")
+    print("按任意键退出关闭此窗口")
+    getch()
