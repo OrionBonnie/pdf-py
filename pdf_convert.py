@@ -7,7 +7,7 @@ from re import match
 from os import cpu_count, listdir
 from os.path import splitext
 from msvcrt import getch
-from tqdm import tqdm
+
 try:
     from pdf2word import Converter
 except ModuleNotFoundError:
