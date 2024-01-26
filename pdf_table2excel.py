@@ -3,7 +3,6 @@ import subprocess
 import csv
 from msvcrt import getch
 from pdf_convert import get_pdf_list
-from tqdm import tqdm
 from time import sleep
 print("基本模块已导入")
 try:
@@ -57,7 +56,7 @@ except ModuleNotFoundError:
     list_mod_all = list_mod_all.stdout.decode("utf-8")
     if list_mod_all.find("tqdm") == -1:
         subprocess.run("pip install tqdm")
-        import tqdm
+        from tqdm import tqdm
 
 
 def is_empty_row(in_row):        # 用于判断内容的行是否为空，如果为空，则返回True，用于消除表格空行
