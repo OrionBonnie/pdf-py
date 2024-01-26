@@ -26,6 +26,7 @@ except ModuleNotFoundError:
         import pypdf
 finally:
     print("pdf读取模块已导入")
+
 try:
     import tabula
 except ModuleNotFoundError:
@@ -36,6 +37,7 @@ except ModuleNotFoundError:
         import tabula
 finally:
     print("列表读取模块已导入")
+
 try:
     from openpyxl import Workbook, load_workbook
     from openpyxl.styles import Alignment, Border, Side
@@ -47,6 +49,15 @@ except ModuleNotFoundError:
         from openpyxl import Workbook
 finally:
     print("excel格式模块已导入")
+
+try:
+    import tqdm
+except ModuleNotFoundError:
+    list_mod_all = subprocess.run("pip list --disable-pip-version-check", capture_output=True)
+    list_mod_all = list_mod_all.stdout.decode("utf-8")
+    if list_mod_all.find("tqdm") == -1:
+        subprocess.run("pip install tqdm")
+        import tqdm
 
 
 def is_empty_row(in_row):        # 用于判断内容的行是否为空，如果为空，则返回True，用于消除表格空行
