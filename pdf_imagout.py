@@ -1,6 +1,5 @@
 import os
 import subprocess
-import tqdm
 from time import sleep
 from msvcrt import getch
 from pdf_convert import get_pdf_list
@@ -17,6 +16,14 @@ except ModuleNotFoundError:
 finally:
     print("PDF I/O流模块已导入")
 
+try:
+    import tqdm
+except ModuleNotFoundError:
+    list_mod_all = subprocess.run("pip list --disable-pip-version-check", capture_output=True)
+    list_mod_all = list_mod_all.stdout.decode("utf-8")
+    if list_mod_all.find("tqdm") == -1:
+        subprocess.run("pip install tqdm")
+        import tqdm
 
 def pdf_extract_img(pdf_path, resolution):
     pdf_io = pdfplumber.open(pdf_path)
