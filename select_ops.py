@@ -8,14 +8,14 @@ print('''
 ''')
 choose = input("请选择对应的操作数字: ")
 if choose == "1":
-    import pdf_convert
-    pdf_convert.main()
+    import pdf_pdf2word
+    pdf_pdf2word.main()
 elif choose == "2":
     import pdf_table2excel
     pdf_table2excel.main()
 elif choose == "3":
-    import pdf_imagout
-    pdf_imagout.main()
+    import pdf_extract_img
+    pdf_extract_img.main()
 else:
     print("未知操作, 按任意键退出")
     getch()
